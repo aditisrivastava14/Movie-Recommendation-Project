@@ -1,0 +1,56 @@
+This document outlines simple, step-by-step instructions for creating four key movie data visualizations. This is a clean, text-only guide ready for your GitHub repository.
+
+***
+
+## Movie Data Visualization Guide
+
+### **Chart 1: Top 10 Movies by Rating**
+
+This chart shows the ten best-rated movies using a basic bar chart.
+
+1.  Start a **New Sheet**.
+2.  Drag the **title** field to the **Rows** shelf.
+3.  Drag the **rating** field to the **Columns** shelf. (It will likely be averaged automatically.)
+4.  Click the **sort icon** (usually on the toolbar) to sort the bars in **descending** order (highest rating first).
+5.  **Filter to Top 10:** Right-click the **title** on the Rows shelf, go to the **Filter** settings, select the **Top** tab, and choose **Top 10** by **Average of Rating**.
+
+---
+
+### **Chart 2: Top 10 Movies by Genre**
+
+This is the same chart as above, but filtered for a specific movie genre (e.g., "Comedy").
+
+1.  **Duplicate** the sheet you created for Chart 1.
+2.  Rename the new sheet to **Top 10 Movies by Genre**.
+3.  Drag the **genres** field to the **Filters** shelf.
+4.  Select the **single genre** you want to analyze (e.g., Comedy).
+5.  The existing **Top 10 filter** will now apply only to movies within that genre.
+
+---
+
+### **Chart 3: Average Rating by Genre**
+
+This uses a **Packed Bubble** chart to compare the average rating of every genre.
+
+1.  Start a **New Sheet**.
+2.  Drag **Genres** to the **Rows** shelf.
+3.  Drag **Rating** to the **Columns** shelf.
+4.  **Change the Measure:** Right-click the `SUM(Rating)` measure on the Columns shelf, go to **Measure**, and select **Average**.
+5.  Go to the **Show Me** panel (top right) and select the **Packed Bubbles** chart.
+6.  Tableau automatically sets the fields:
+    * **Size Card:** Should have `AVG(Rating)`.
+    * **Color Card:** Should have **Genres**.
+7.  **Add Labels:** Drag the **Genres** field onto the **Label** card.
+8.  *(Optional):* Drag **AVG(Rating)** onto the **Label** card as well, so both the genre name and its average rating show on the bubbles.
+
+---
+
+### **Chart 4: Movies Released per Year**
+
+This creates a **Line Chart** to show the trend of how many movies were released each year.
+
+1.  Start a **New Sheet**.
+2.  Drag **release\_year** to the **Columns** shelf.
+3.  Drag **title** to the **Rows** shelf.
+4.  **Change the Measure:** Right-click the measure on the Rows shelf (e.g., `title`), go to **Measure**, and select **Count**.
+5.  Tableau will likely show a line chart automatically, but if not, change the Marks type to **Line**.
