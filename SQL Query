@@ -1,0 +1,112 @@
+-- Data Cleaning
+
+USE Movies;
+
+SHOW TABLES;
+
+SELECT *
+FROM MOVIES;
+
+SELECT AVG(RUNTIME)												-- avg value display : 137.2889 
+FROM MOVIES;
+
+UPDATE MOVIES													-- where ke saath koi key like ID nhi use kr rhe to wo safe update nhi hua
+SET RUNTIME = 137.2889 
+WHERE RUNTIME IS NULL; 				
+
+SET SQL_SAFE_UPDATES = 0;										-- pehle sql safe update feature ko off karo 
+
+UPDATE MOVIES 													-- runtime column ke saare null values mei avg(runtime) fill hoga 
+SET RUNTIME = 137.2889 											-- "Handling NULL Values concept"
+WHERE RUNTIME IS NULL;
+
+DELETE FROM movies 					
+WHERE release_date IS NULL;										-- release date column ke null values removed
+
+UPDATE MOVIES 									
+SET genres = REPLACE(genres, '[', '');							-- open square bracket removed
+
+UPDATE MOVIES
+SET genres = REPLACE(genres, ']', '');							-- closed square bracket removed
+
+UPDATE MOVIES 
+SET genres = REPLACE(genres, '{"id":', '');						-- id key removed
+
+UPDATE MOVIES
+SET genres = REPLACE(genres, '{"name":', ''); 					-- name key removed
+
+UPDATE MOVIES 
+SET genres = REPLACE(REPLACE(genres, '}', ''), '"', '');   		-- curly braces } and stray quotes " removed
+
+UPDATE MOVIES 
+SET genres = REPLACE(genres, '|', ', '); 						-- temp separator | removed by comma separator ,
+
+SELECT title, genres FROM MOVIES LIMIT 10;   					-- top 10 rows to check
+
+SET SQL_SAFE_UPDATES = 1;										-- safe update on
+
+-- Data Cleaning for Visualisation
+
+ALTER TABLE movies ADD COLUMN release_year INT;  				-- becz Tableau works better with year inspite of date
+
+UPDATE movies
+SET release_year = YEAR(release_date); 							-- date changed to year
+
+SELECT AVG(vote_average) FROM movies;     						-- 6.522222222222224
+
+UPDATE movies
+SET vote_average = 6.522222222222224
+WHERE vote_average IS NULL;
+
+SELECT AVG(popularity) FROM movies;								-- 94.30892246666667
+
+UPDATE movies
+SET popularity = 94.30892246666667
+WHERE POPULARITY IS NULL;
+
+CREATE TABLE movies_clean AS
+SELECT 
+    'Movie ID' AS movie_id,       								-- excel mei column name mei avoid spaces, otherwise they can be treated as separate tokens
+    Title AS title,
+    Genres AS genres,
+    Release_Date AS release_year,
+    Vote_Average AS rating,
+    Popularity AS popularity,
+    Runtime AS runtime
+FROM movies;
+
+SELECT * FROM movies_clean  LIMIT 10;
+
+
+-- 1. Top 10 Movies by Rating 
+
+SELECT TITLE, RATING, RELEASE_YEAR 
+FROM MOVIES_CLEAN
+ORDER BY RATING DESC
+LIMIT 10;
+
+-- 2. Top 10 Movies by Genre (e.g., Comedy)
+
+SELECT TITLE, RATING, RELEASE_YEAR
+FROM MOVIES_CLEAN
+WHERE GENRES LIKE '%COMEDY%'
+ORDER BY RATING DESC
+LIMIT 10;
+
+-- 3. Average Rating by Genre
+
+SELECT genres, ROUND(AVG(rating),2) AS avg_rating
+FROM movies_clean
+GROUP BY genres
+ORDER BY avg_rating DESC;
+
+-- 4. Movies Released per Year
+
+SELECT release_year, COUNT(*) AS movies_count
+FROM movies_clean
+GROUP BY release_year
+ORDER BY release_year;
+
+SELECT * FROM MOVIES_CLEAN;
+
+
