@@ -1,72 +1,97 @@
--- Data Cleaning
-
+-- Use the Movies database
 USE Movies;
 
+-- Display all tables in the database
 SHOW TABLES;
 
+-- Retrieve all records from the MOVIES table
 SELECT *
 FROM MOVIES;
 
-SELECT AVG(RUNTIME)												-- avg value display : 137.2889 
+-- Calculate the average runtime of all movies
+SELECT AVG(RUNTIME)  -- avg value display : 137.2889 
 FROM MOVIES;
 
-UPDATE MOVIES													-- where ke saath koi key like ID nhi use kr rhe to wo safe update nhi hua
+-- Attempt to update NULL runtimes (unsafe without key)
+UPDATE MOVIES  -- where ke saath koi key like ID nhi use kr rhe to wo safe update nhi hua
 SET RUNTIME = 137.2889 
 WHERE RUNTIME IS NULL; 				
 
-SET SQL_SAFE_UPDATES = 0;										-- pehle sql safe update feature ko off karo 
+-- Disable SQL safe updates to allow updates without WHERE key
+SET SQL_SAFE_UPDATES = 0;  -- pehle sql safe update feature ko off karo 
 
-UPDATE MOVIES 													-- runtime column ke saare null values mei avg(runtime) fill hoga 
-SET RUNTIME = 137.2889 											-- "Handling NULL Values concept"
+-- Fill all NULL values in the runtime column with the average runtime
+UPDATE MOVIES  -- runtime column ke saare null values mei avg(runtime) fill hoga 
+SET RUNTIME = 137.2889  -- "Handling NULL Values concept"
 WHERE RUNTIME IS NULL;
 
-DELETE FROM movies 					
-WHERE release_date IS NULL;										-- release date column ke null values removed
+-- Delete rows where release_date is NULL
+DELETE FROM MOVIES					
+WHERE release_date IS NULL;  -- release date column ke null values removed
 
-UPDATE MOVIES 									
-SET genres = REPLACE(genres, '[', '');							-- open square bracket removed
+-- Data cleaning on genres column
 
+-- Remove open square brackets
+UPDATE MOVIES									
+SET genres = REPLACE(genres, '[', '');  -- open square bracket removed
+
+-- Remove closed square brackets
 UPDATE MOVIES
-SET genres = REPLACE(genres, ']', '');							-- closed square bracket removed
+SET genres = REPLACE(genres, ']', '');  -- closed square bracket removed
 
+-- Remove the 'id' key
 UPDATE MOVIES 
-SET genres = REPLACE(genres, '{"id":', '');						-- id key removed
+SET genres = REPLACE(genres, '{"id":', '');  -- id key removed
 
+-- Remove the 'name' key
 UPDATE MOVIES
-SET genres = REPLACE(genres, '{"name":', ''); 					-- name key removed
+SET genres = REPLACE(genres, '{"name":', '');  -- name key removed
 
+-- Remove curly braces and stray quotes
 UPDATE MOVIES 
-SET genres = REPLACE(REPLACE(genres, '}', ''), '"', '');   		-- curly braces } and stray quotes " removed
+SET genres = REPLACE(REPLACE(genres, '}', ''), '"', '');  -- curly braces } and stray quotes " removed
 
+-- Replace temporary pipe separator '|' with comma
 UPDATE MOVIES 
-SET genres = REPLACE(genres, '|', ', '); 						-- temp separator | removed by comma separator ,
+SET genres = REPLACE(genres, '|', ', ');  -- temp separator | removed by comma separator ,
 
-SELECT title, genres FROM MOVIES LIMIT 10;   					-- top 10 rows to check
+-- Preview top 10 movie titles with cleaned genres
+SELECT title, genres 
+FROM MOVIES 
+LIMIT 10;  -- top 10 rows to check
 
-SET SQL_SAFE_UPDATES = 1;										-- safe update on
+-- Re-enable SQL safe updates
+SET SQL_SAFE_UPDATES = 1;  -- safe update on
 
--- Data Cleaning for Visualisation
+-- ===============================================
+-- Data Cleaning and Preparation for Visualization
+-- ===============================================
 
-ALTER TABLE movies ADD COLUMN release_year INT;  				-- becz Tableau works better with year inspite of date
+-- Add a new column release_year for easier analysis in Tableau
+ALTER TABLE movies ADD COLUMN release_year INT;  -- Tableau works better with year instead of full date
 
+-- Populate release_year from release_date
 UPDATE movies
-SET release_year = YEAR(release_date); 							-- date changed to year
+SET release_year = YEAR(release_date);  -- extract year from full date
 
-SELECT AVG(vote_average) FROM movies;     						-- 6.522222222222224
+-- Handle NULL values in vote_average column
+SELECT AVG(vote_average) FROM movies;  -- avg vote_average: 6.522222222222224
 
 UPDATE movies
 SET vote_average = 6.522222222222224
-WHERE vote_average IS NULL;
+WHERE vote_average IS NULL;  -- fill NULLs with average
 
-SELECT AVG(popularity) FROM movies;								-- 94.30892246666667
+-- Handle NULL values in popularity column
+SELECT AVG(popularity) FROM movies;  -- avg popularity: 94.30892246666667
 
 UPDATE movies
 SET popularity = 94.30892246666667
-WHERE POPULARITY IS NULL;
+WHERE popularity IS NULL;  -- fill NULLs with average
 
+-- Create a clean version of the movies table for analysis
 CREATE TABLE movies_clean AS
 SELECT 
-    'Movie ID' AS movie_id,       								-- excel mei column name mei avoid spaces, otherwise they can be treated as separate tokens
+    'Movie ID' AS movie_id,  -- avoid spaces in column names for Excel/BI tools
     Title AS title,
     Genres AS genres,
     Release_Date AS release_year,
@@ -75,38 +100,40 @@ SELECT
     Runtime AS runtime
 FROM movies;
 
-SELECT * FROM movies_clean  LIMIT 10;
-
-
--- 1. Top 10 Movies by Rating 
-
-SELECT TITLE, RATING, RELEASE_YEAR 
-FROM MOVIES_CLEAN
-ORDER BY RATING DESC
+-- Preview the first 10 rows of the cleaned table
+SELECT * 
+FROM movies_clean  
 LIMIT 10;
 
--- 2. Top 10 Movies by Genre (e.g., Comedy)
+-- ===============================================
+-- Analysis Queries
+-- ===============================================
 
-SELECT TITLE, RATING, RELEASE_YEAR
-FROM MOVIES_CLEAN
-WHERE GENRES LIKE '%COMEDY%'
-ORDER BY RATING DESC
+-- 1. Top 10 Movies by Rating
+SELECT title, rating, release_year
+FROM movies_clean
+ORDER BY rating DESC
+LIMIT 10;
+
+-- 2. Top 10 Movies by Genre (Example: Comedy)
+SELECT title, rating, release_year
+FROM movies_clean
+WHERE genres LIKE '%COMEDY%'  -- filter for movies containing 'COMEDY'
+ORDER BY rating DESC
 LIMIT 10;
 
 -- 3. Average Rating by Genre
-
-SELECT genres, ROUND(AVG(rating),2) AS avg_rating
+SELECT genres, ROUND(AVG(rating), 2) AS avg_rating  -- rounded to 2 decimal places for readability
 FROM movies_clean
 GROUP BY genres
 ORDER BY avg_rating DESC;
 
 -- 4. Movies Released per Year
-
 SELECT release_year, COUNT(*) AS movies_count
 FROM movies_clean
 GROUP BY release_year
 ORDER BY release_year;
 
-SELECT * FROM MOVIES_CLEAN;
-
-
+-- Preview the entire cleaned movies table (optional)
+SELECT * 
+FROM movies_clean;
