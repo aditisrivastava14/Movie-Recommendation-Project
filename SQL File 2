@@ -1,0 +1,35 @@
+SELECT AVG(RUNTIME)  											-- avg value display : 106.8314 
+FROM MOVIES;
+
+SET SQL_SAFE_UPDATES = 0; 										-- safe update off
+
+UPDATE MOVIES   												-- null runtime is assigned the avg value
+SET RUNTIME = 106.8314
+WHERE RUNTIME IS NULL; 
+
+DELETE FROM movies 												-- null release date columns are removed
+WHERE release_date IS NULL;
+
+UPDATE MOVIES 									
+SET genres = REPLACE(genres, '[', '');							-- open square bracket removed
+
+UPDATE MOVIES
+SET genres = REPLACE(genres, ']', '');							-- closed square bracket removed
+
+UPDATE MOVIES 
+SET genres = REPLACE(genres, '{"id":', '');						-- id key removed
+
+UPDATE MOVIES
+SET genres = REPLACE(genres, '{"name":', ''); 					-- name key removed
+
+UPDATE MOVIES 
+SET genres = REPLACE(REPLACE(genres, '}', ''), '"', '');   		-- curly braces } and stray quotes " removed
+
+UPDATE MOVIES 
+SET genres = REPLACE(genres, '|', ', '); 						-- temp separator | removed by comma separator ,
+
+SET SQL_SAFE_UPDATES = 1;										-- safe update on
+
+SELECT title, genres FROM MOVIES LIMIT 10;   					-- top 10 rows to check
+
+
