@@ -1,0 +1,36 @@
+# Tableau Steps :-
+
+Chart 1: Top 10 Movies by Rating:-
+
+1. Go to a new sheet.
+2. Drag title to Rows.
+3. Drag rating to Columns.
+4. Sort descending.
+5. Drag title to Color.
+6. Format chart into Horizontal Bar Chart.
+7. Rename the sheet.
+
+Chart 2 : Movies Released per Year:-
+
+1. Go to a New sheet.
+2. Drag release_year into Columns.
+3. Drag title into Rows and change aggregation to COUNT.
+4. Change chart type to Line Chart.
+5. Rename the sheet.
+
+Chart 3: Average Rating per Genre:-
+
+1. Go to a New sheet.
+2. Drag Genres into Rows.
+3. Drag Rating (Average) into Columns.
+4. Format chart into Packed Bubbles Chart.
+5. Drag Genre into Color.
+6. Rename the sheet.
+
+Chart 4 : Top 10 Movies by Genre (Comedy):-
+
+1. Go to a new sheet.
+2. Drag Title into Rows.
+3. Drag Rating  into Columns.
+4. Format the chart into Bar Chart.
+5. Rename the sheet.
