@@ -1,0 +1,46 @@
+ALTER TABLE movies ADD COLUMN release_year INT;  			-- Tableau works better with year instead of full date
+
+SELECT *
+FROM movies
+WHERE release_date = '' OR release_date IS NULL;
+
+UPDATE movies
+SET release_date = NULL
+WHERE release_date = '';
+
+UPDATE movies
+SET release_year = YEAR(release_date)
+WHERE release_date IS NOT NULL;								-- converted into release year wherever release date is not null
+
+-- Handle NULL values in vote_average column
+SELECT AVG(vote_average) FROM movies; 						-- avg vote_average: 6.092171559442011
+
+UPDATE movies
+SET vote_average = 6.092171559442011
+WHERE vote_average IS NULL;  								-- fill NULLs with average
+
+-- Handle NULL values in popularity column
+SELECT AVG(popularity) FROM movies;  						-- avg popularity: 21.49230058817409
+
+UPDATE movies
+SET popularity = 21.49230058817409
+WHERE popularity IS NULL;  									-- fill NULLs with average
+
+-- Create a clean version of the movies table for analysis
+CREATE TABLE movies_clean AS
+SELECT 
+    Movie_ID AS movie_id,  
+    Title AS title,
+    Genres AS genres,
+    Release_Date AS release_year,
+    Vote_Average AS rating,
+    Popularity AS popularity,
+    Runtime AS runtime
+FROM movies;
+
+-- Show the first 10 rows of the cleaned table
+SELECT * 
+FROM movies_clean  
+LIMIT 10;
+
+SELECT * FROM MOVIES_CLEAN;
