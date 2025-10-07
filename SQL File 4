@@ -1,0 +1,29 @@
+-- Analysis Queries
+
+-- 1. Top 10 Movies by Rating
+SELECT title, rating
+FROM movies_clean
+ORDER BY rating DESC
+LIMIT 10;
+
+-- 2. Top 10 Movies by Genre (Example: Comedy)
+SELECT title, rating
+FROM movies_clean
+WHERE genres like '%comedy%' -- filter for movies containing 'COMEDY'
+ORDER BY rating DESC
+LIMIT 10;
+
+-- 3. Average Rating by Genre
+SELECT genres, ROUND(AVG(rating), 2) AS avg_rating  -- rounded to 2 decimal places for readability
+FROM movies_clean
+GROUP BY genres
+ORDER BY avg_rating DESC;
+
+-- 4. Movies Released per Year
+SELECT release_year, COUNT(*) AS movies_count
+FROM movies_clean
+GROUP BY release_year
+ORDER BY release_year;
+
+SELECT * 
+FROM movies_clean;
