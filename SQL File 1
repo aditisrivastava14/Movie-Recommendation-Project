@@ -1,0 +1,25 @@
+USE Movies_db;
+
+CREATE TABLE Movies (
+Movie_ID INT,
+Title TEXT,	
+Genres TEXT,
+Release_Date TEXT,
+Vote_Average DOUBLE,	
+Popularity DOUBLE,
+Runtime INT															-- allows empty strings
+);
+
+SET GLOBAL LOCAL_INFILE = ON;										-- turns on server side, so that the statement can read files from client side
+
+LOAD DATA LOCAL INFILE '/Users/aditi/Documents/Projects/Movie Recommendation System/Movies.csv' INTO TABLE MOVIES
+FIELDS TERMINATED BY ','
+ENCLOSED BY '"'
+LINES TERMINATED BY '\r\n'
+IGNORE 1 LINES;
+
+ALTER TABLE Movies MODIFY COLUMN Runtime INT NULL;					-- to store null is better rather than an empty string
+
+SELECT * FROM MOVIES;
+
+SELECT COUNT(*) FROM MOVIES;
